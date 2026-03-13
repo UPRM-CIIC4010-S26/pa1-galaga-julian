@@ -3,6 +3,8 @@
 #include "Math.hpp"
 #include "ImageManager.hpp"
 #include "Animation.hpp"
+#include "Program.hpp"
+#include"SoundManager.hpp"
 #include <iostream>
 
 class Enemy {
@@ -51,13 +53,24 @@ class Enemy {
                     p.second->update(p.first, target);
 
                     for (Projectile& p2 : Projectile::projectiles) {
-                        if (p2.ID != 1 && HitBox::Collision(p.second->hitBox, p2.getHitBox())) {
+                        if (p2.ID == 0 && HitBox::Collision(p.second->hitBox, p2.getHitBox())) {
                             p.second->health--;
+
+                            if (p.second->health > 0) {
+                                PlaySound(SoundManager::hit);
+                            }
+                            else {
+                                PlaySound(SoundManager::dead);
+                            }
+
                             p2.del = true;
+                        }
+                    }
                         }
                     }
 
                     if (p.second->health <= 0) {
+                        Program::score += 100;
                         Animation::animations.push_back(
                             Animation(p.second->position.first, p.second->position.second, 155, 0, 33, 33, 30, 30, 4, ImageManager::SpriteSheet)
                         );
