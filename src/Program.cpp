@@ -58,12 +58,15 @@ void Program::Update() {
         for (Projectile& p : Projectile::projectiles) { 
             p.update(); 
 
-            if (p.id != 0 && HitBox::Collision(player->hitBox, p.hitBox)) {
+            if (p.ID != 0 && HitBox::Collision(player->hitBox, p.getHitBox())) {
                 PlayerReset();
             }
 
         }
-
+        if (score / 1000 > lifeMilestone && lives < 5) {
+            lives++;
+            lifeMilestone++;
+        }
         if (lives <= 0 && pauseFrames <= 0) gameOver = true;
         Projectile::CleanProjectiles();
         Projectile::ProjectileCollision();
@@ -79,6 +82,7 @@ void Program::Draw() {
          DrawTexturePro(ImageManager::SpriteSheet, Rectangle{0, 0, 17, 18}, 
                    Rectangle{10.0f + i * 30, GetScreenHeight() - 30.0f, 20, 20}, 
                    Vector2{0, 0}, 0, WHITE);
+                   DrawText(TextFormat("Score: %i", score), GetScreenWidth() - 180, 10, 24, WHITE);
     }
 
 
@@ -165,7 +169,9 @@ void Program::KeyInputs() {
     if (startup && IsKeyPressed(KEY_ENTER)) {
         startup = false;
     }
-
+    if (IsKeyPressed('K')) {
+    score += 500;
+}
     if (!startup && !paused && !gameOver && pauseFrames <= 0) player->keyInputs();
    
 }
@@ -191,6 +197,8 @@ void Program::Reset() {
     count = 0;
     delay = 0;
     lives = 3;
+    score;
+    lifeMilestone = 0;
 
     Enemy::enemies.push_back(std::pair<std::pair<float, float>, Enemy*> {
         std::pair<float, float>{350, 150}, 

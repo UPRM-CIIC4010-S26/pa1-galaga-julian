@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PROGRAM_HPP
+#define PROGRAM_HPP
 
 #include <iostream>
 #include <string>
@@ -41,3 +42,5 @@ class Program {
           
         ~Program() {}
 };
+
+#endif
